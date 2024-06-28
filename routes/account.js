@@ -4,13 +4,14 @@ const { setup } = require('../db_setup');
 const sha = require('sha256');
 
 // 회원가입 페이지
-router.get('/account/enter', (req, res) => {
+router.get('/enter', (req, res) => {
     res.render('enter.ejs');
 });
 
 // 회원가입 폼을 받음
-router.post('/account/save', async (req, res) => {
+router.post('/save', async (req, res) => {
     const { mysqldb } = await setup();
+
     // mongodb.collection('users').findOne({ userid: req.body.userid }).then((result) => {
     //     if (result) {
     //         res.render('enter.ejs', { data: { msg: '아이디가 중복되었습니다.' } });
