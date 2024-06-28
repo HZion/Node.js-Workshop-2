@@ -3,6 +3,12 @@ const { setup } = require('../db_setup');
 
 const sha = require('sha256');
 const throttle = require("express-throttle");
+const { body } = require('express-validator');
+const { validatorErrorChecker } = require('../middleware/validator');
+
+// 8 - 12  소문자 숫자 특수문자 포함
+const regexPw =
+    /^[a-z0-9#?!@$%^&*-](?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-])[a-z0-9#?!@$%^&*-]{8,12}$/;
 
 // 회원가입 페이지
 router.get('/enter', (req, res) => {
@@ -19,7 +25,11 @@ router.post('/save', throttle({
     on_throttled: function (req, res, next, bucket){
         res.render('index.ejs', { data: { alertMsg: '1분당 한번만 가입 가능합니다.'}})
     }
-}), async (req, res) => {
+}), [
+    body('userid').exists().isLength({min: 5}),
+    body('userpw').exists().matches(regexPw),
+    validatorErrorChecker
+], async (req, res) => {
     const { mysqldb } = await setup();
 
 
