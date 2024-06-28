@@ -64,31 +64,24 @@ router.get('/login', async (req, res) => {
 // 로그인 처리
 router.post('/account/login', async (req, res) => {
     const { mysqldb } = await setup();
-    // mongodb.collection('users').findOne({ userid: req.body.userid }).then((result) => {
-    //     if (!result) {
-    //         // res.render('login.ejs');
-    //         res.render('index.ejs', { data: { alertMsg: '다시 로그인 해주세요.' } });
-    //     }
+    let sql = 'SELECT userid, userpw, salt FROM account WHERE userid=?';
+    mysqldb.query(sql, [req.body.userid], (err, rows, fields) => {
+        if (err) {
+            return console.error(err);
+        }
+        
+        if (rows.length == 0) {
+            return res.render('index.ejs', { data: { alertMsg: '다시 로그인 해주세요.' } });
+        }
 
-    //     const sql = `select salt from usersalt where userid=?`;
-    //     mysqldb.query(sql, [req.body.userid], (err, rows, fields) => {
-    //         const salt = rows[0].salt;
-    //         const hashPw = sha(req.body.userpw + salt);
-    //         if (result.userpw == hashPw) {
-    //             req.body.userpw = hashPw;
-    //             req.session.user = req.body;
-    //             res.cookie('uid', req.body.userid);
-    //             res.render('index.ejs');
-    //         } else {
-    //             // res.render('login.ejs');
-    //             res.render('index.ejs', { data: { alertMsg: '다시 로그인 해주세요.' } });
-    //         }
-    //     });
-    // }).catch((err) => {
-    //     // console.log(err);
-    //     // res.status(500).send();
-    //     res.render('index.ejs', { data: { alertMsg: '다시 로그인 해주세요.' } });
-    // });
+        if (rows[0].userpw != sha(req.body.userpw + rows[0].salt)) {
+            return res.render('index.ejs', { data: { alertMsg: '다시 로그인 해주세요.' } });
+        }
+
+        req.session.user = { userid: req.body.userid };  // 로그인 성공
+        res.cookie('uid', req.body.userid);
+        return res.redirect('/');
+    });
 });
 
 // 로그아웃

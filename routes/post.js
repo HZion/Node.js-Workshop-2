@@ -28,20 +28,12 @@ function cacheMiddleware(duration) {
 router.get('/list', cacheMiddleware(10), async (req, res) => {
     const { mysqldb} = await setup()
     try{
-        let [rows, fields] = await mysqldb.promise().query('select * from post')
-        console.log('불러오기')
-        res.render('list.ejs', {data: rows})
+        let [rows, fields] = await mysqldb.promise().query('select * from post');
+        console.log('불러오기');
+        res.render('list.ejs', { data: rows });
     } catch (e) {
         console.log(e)
     }
-
 })
-
-
-// function list(mongodb, req, res) {
-//     mongodb.collection('post').find().toArray().then((posts) => {
-//         res.render('list.ejs', { data: posts });
-//     })
-// }
 
 module.exports = router;
