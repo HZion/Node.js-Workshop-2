@@ -23,6 +23,7 @@ router.post('/save', throttle({
     const { mysqldb } = await setup();
 
 
+
     // 중복 검사 쿼리
     const checkUserQuery = 'SELECT COUNT(*) AS count FROM account WHERE userid = ?';
 
@@ -41,9 +42,9 @@ router.post('/save', throttle({
       const insertUserQuery = 'INSERT INTO account (userid, userpw, salt, usergroup, useremail) VALUES (?, ?, ?, ?, ?)';
 
       const generateSalt = (length = 16) => {
-                        const crypto = require('crypto');
-                        return crypto.randomBytes(length).toString("hex");
-                    };
+        const crypto = require('crypto');
+        return crypto.randomBytes(length).toString("hex");
+      };
       const salt = generateSalt();
       req.body.userpw = sha(req.body.userpw + salt);
 
@@ -57,6 +58,7 @@ router.post('/save', throttle({
       });
     });
   });
+
 //     const { mysqldb } = await setup();
 
 //     // mongodb.collection('users').findOne({ userid: req.body.userid }).then((result) => {
