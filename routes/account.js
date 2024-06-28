@@ -91,4 +91,32 @@ router.get('/logout', async (req, res) => {
     res.render('index.ejs');
 });
 
+// 회원가입 폼에서 아이디만 중복 검사하기
+router.post('/check-id', async function (req, res) {
+  try {
+      if (req.body.userid == undefined) {
+          res.json({ isDuplicate: false });
+          return;
+      }
+      
+      const { mysqldb } = await setup();
+      let sql = 'SELECT userid, userpw, salt FROM account WHERE userid=?';
+      mysqldb.query(sql, [req.body.userid], (err, rows, fields) => {
+          if (err) {
+              console.error(err);
+              return;
+          }
+
+          if (0 < rows.length) {
+              return res.json({ isDuplicate: true });
+          }
+
+          res.json({ isDuplicate: false });
+      });
+  } catch (error) {
+      console.error('Error checking user ID:', error);
+      res.status(500).json({ error: 'An error occurred while checking the user ID.' });
+  }
+});
+
 module.exports = router;

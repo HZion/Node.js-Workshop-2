@@ -29,6 +29,7 @@ app.use(cookieParser());
 // bodyParsers
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 // routes
 app.use('/account', require('./routes/account'));
