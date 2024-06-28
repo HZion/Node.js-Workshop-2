@@ -5,13 +5,16 @@ const { setup } = require('./db_setup');
 const express = require('express');
 const app = express();
 
+// compression(gzip)
+const compression = require('compression');
+app.use(compression());
+
 // access limit
 const rateLimit  = require('express-rate-limit');
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15분
     max: 100 // IP당 최대 100개의 요청
 });
-
 
 app.use(limiter);
 
