@@ -27,13 +27,16 @@ app.use(session({
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
-// bodyParser
+// bodyParsers
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // routes
 app.use('/', require('./routes/account'));
 app.use('/post', require('./routes/post'));
+
+//dotenv
+const dotenv = require('dotenv').config();
 
 // listen
 app.listen(process.env.WEB_PORT, async () => {
@@ -48,7 +51,7 @@ app.get('/', async (req, res) => {
             res.clearCookie('uid', { path: '/' });
         }
 
-        res.render('index.ejs');
+        res.render('index.ejs', { user: req.session.user });
     } catch (err) {
         res.status(500).send('DB Fail.');
     }
