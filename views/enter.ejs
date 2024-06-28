@@ -46,7 +46,7 @@
     <body>
         <%- include('menu.html') %>
         
-        <form action="/signup" method="post" onsubmit="return validateForm()">
+        <form action="/account/save" method="post" onsubmit="return validateForm()">
             <div class="form-container">
                 <div class="mb-3">
                     <label for="exampleFormControlInput1" class="form-label">아이디</label>
@@ -118,7 +118,7 @@
             function validateForm() {
                 let isValid = true;
 
-                const idInput = document.querySelector('input[name="userid"]');
+                const idInput = document.getElementById('form_userid');
                 const idError = document.getElementById('idError');
                 if (idInput.value.length < 4) {
                     idError.textContent = '아이디는 4자리 이상으로 입력해주세요.';
@@ -129,7 +129,7 @@
                     idInput.classList.remove('is-invalid');
                 }
 
-                const passwordInput = document.querySelector('input[name="userpw"]');
+                const passwordInput = document.getElementById('form_userpw');
                 const passwordError = document.getElementById('passwordError');
                 if (passwordInput.value.length < 4) {
                     passwordError.textContent = '비밀번호는 4자리 이상으로 입력해주세요.';
@@ -140,7 +140,7 @@
                     passwordInput.classList.remove('is-invalid');
                 }
 
-                const emailInput = document.querySelector('input[name="useremail"]');
+                const emailInput = document.getElementById('from_useremail');
                 const emailError = document.getElementById('emailError');
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if (!emailRegex.test(emailInput.value)) {
@@ -151,18 +151,7 @@
                     emailError.textContent = '';
                     emailInput.classList.remove('is-invalid');
                 }
-
-                const groupInput = document.querySelector('input[name="usergroup"]');
-                const groupError = document.getElementById('groupError');
-                if (groupInput.value.length == 0 || isNaN(groupInput.value)) {
-                    groupError.textContent = '값을 입력해주세요.';
-                    groupInput.classList.add('is-invalid');
-                    isValid = false;
-                } else {
-                    groupError.textContent = '';
-                    groupInput.classList.remove('is-invalid');
-                }
-
+                
                 return isValid;
             }
         </script>
