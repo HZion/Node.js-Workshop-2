@@ -41,7 +41,7 @@ app.get('/', async (req, res) => {
             res.clearCookie('uid', { path: '/' });
         }
         
-        res.render('index.ejs');
+        res.render('index.ejs', { user: req.session.user });
     } catch (err) {
         res.status(500).send('DB Fail.');
     }
