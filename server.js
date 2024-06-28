@@ -5,6 +5,16 @@ const { setup } = require('./db_setup');
 const express = require('express');
 const app = express();
 
+// access limit
+const rateLimit  = require('express-rate-limit');
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15분
+    max: 10 // IP당 최대 100개의 요청
+});
+
+app.use(limiter);
+
+
 // session
 const session = require('express-session');
 app.use(session({
@@ -37,7 +47,7 @@ app.get('/', async (req, res) => {
         if (!req.session.user) {
             res.clearCookie('uid', { path: '/' });
         }
-        
+
         res.render('index.ejs');
     } catch (err) {
         res.status(500).send('DB Fail.');
