@@ -95,29 +95,27 @@
 
                 // 서버에 아이디 중복 체크 요청
                 fetch('/account/check-id', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ userid }),
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        // 아이디 중복 여부에 따른 메시지 표시
-                        if (data.isDuplicate) {
-                            showIdError('이미 사용 중인 아이디입니다.');
-                        } else {
-                            showIdError('사용 가능한 아이디입니다.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error checking ID duplicate:', error);
-                    });
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userid }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // 아이디 중복 여부에 따른 메시지 표시
+                    if (data.isDuplicate) {
+                        showIdError('이미 사용 중인 아이디입니다.');
+                    } else {
+                        showIdError('사용 가능한 아이디입니다.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking ID duplicate:', error);
+                });
             }
             
             function validateForm() {
-                let isValid = true;
-
                 const idInput = document.getElementById('form_userid');
                 const idError = document.getElementById('idError');
                 if (idInput.value.length < 4) {

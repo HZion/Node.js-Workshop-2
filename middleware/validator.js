@@ -7,4 +7,3 @@ exports.validatorErrorChecker = (req, res, next) => {
     }
     next();
 }
-

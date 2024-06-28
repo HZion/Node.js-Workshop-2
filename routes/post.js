@@ -35,16 +35,16 @@ router.get('/list', cacheMiddleware(10), async (req, res) => {
         return res.redirect('/');
     }
     
-    const { mysqldb } = await setup()
+    const { mysqldb } = await setup();
     try{
         let [rows, fields] = await mysqldb.promise().query('select * from post');
 
         for (row of rows) {
-            row.created = dateFormat(row.created)
+            row.created = dateFormat(row.created);
         }
         
         console.log('불러오기');
-        res.render('post/list.ejs', { data: rows })
+        res.render('post/list.ejs', { data: rows });
     } catch (e) {
         console.log(e)
     }

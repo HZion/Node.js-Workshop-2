@@ -32,35 +32,35 @@ router.post('/signup', throttle({
 ], async (req, res) => {
     const { mysqldb } = await setup();
 
-
     // 중복 검사 쿼리
     const checkUserQuery = 'SELECT COUNT(*) AS count FROM account WHERE userid = ?';
 
     mysqldb.query(checkUserQuery, [req.body.userid], (err, results) => {
-      if (err) {
-        console.error('error during user check: ' + err.stack);
-        return res.status(500).json({ error: 'Database error' });
-      }
+        if (err) {
+            console.error('error during user check: ' + err.stack);
+            return res.status(500).json({ error: 'Database error' });
+        }
 
-      if (results[0].count > 0) {
-        // 중복된 userid가 존재하는 경우
-        return res.status(400).json({ error: 'User ID already exists' });
-      }
+        if (results[0].count > 0) {
+            // 중복된 userid가 존재하는 경우
+            return res.status(400).json({ error: 'User ID already exists' });
+        }
 
-      // 중복된 userid가 없는 경우 회원 가입 진행
-      const insertUserQuery = 'INSERT INTO account (userid, userpw, salt, usergroup, useremail) VALUES (?, ?, ?, ?, ?)';
+        // 중복된 userid가 없는 경우 회원 가입 진행
+        const insertUserQuery = 'INSERT INTO account (userid, userpw, salt, usergroup, useremail) VALUES (?, ?, ?, ?, ?)';
 
-      const generateSalt = (length = 16) => {
+        // Salt
+        const generateSalt = (length = 16) => {
         const crypto = require('crypto');
         return crypto.randomBytes(length).toString("hex");
-      };
-      const salt = generateSalt();
-      req.body.userpw = sha(req.body.userpw + salt);
+        };
+        const salt = generateSalt();
+        req.body.userpw = sha(req.body.userpw + salt);
 
-      mysqldb.query(insertUserQuery, [req.body.userid, req.body.userpw, salt, req.body.usergroup, req.body.useremail], (err, results) => {
+        mysqldb.query(insertUserQuery, [req.body.userid, req.body.userpw, salt, req.body.usergroup, req.body.useremail], (err, results) => {
         if (err) {
-          console.error('error during user insertion: ' + err.stack);
-          return res.status(500).json({ error: 'Database error' });
+            console.error('error during user insertion: ' + err.stack);
+            return res.status(500).json({ error: 'Database error' });
         }
 
         res.render('index.ejs');
