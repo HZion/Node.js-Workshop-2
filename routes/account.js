@@ -68,7 +68,7 @@ router.post('/account/login', async (req, res) => {
         if (err) {
             return console.error(err);
         }
-
+        
         if (rows.length == 0) {
             return res.render('index.ejs', { data: { alertMsg: '다시 로그인 해주세요.' } });
         }
