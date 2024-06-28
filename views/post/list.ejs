@@ -23,9 +23,9 @@
             <% for(let i = 0; i < data.length; i++){ %>
             <tr>
                 <td data-bs-toggle="modal" data-bs-target="#myModal">
-                    <a href="#" onclick="modal_content(`<%= data[i]._id %>`,`<%= data[i].title %>`,`<%= data[i].content %>`, `<%= data[i].created %>`)"><%= data[i].title %></a></td>
+                    <a href="#" onclick="modal_content(`<%= data[i].id %>`,`<%= data[i].title %>`,`<%= data[i].content %>`, `<%= data[i].created %>`)"><%= data[i].title %></a></td>
                 <td><%= data[i].created %></td>
-                <td><button class='delete btn btn-outline-danger' data-id='<%= data[i]._id %>'>삭제</button></td>
+                <td><button data-id='<%= data[i].id %>' class='delete btn btn-outline-danger' >삭제</button></td>
             </tr>
             <% } %>
         </tbody>
@@ -35,10 +35,34 @@
         <button class=" enter btn btn-primary" style="float:right;">글쓰기</button>
     </div>
 
+
     <script>
+
+        $('.delete').click(function(e) {
+            let sid = e.target.dataset.id;
+            let item = $(this);
+            $.ajax({
+                type: 'post',
+                url: '/post/delete',
+                data: {
+                    id: sid
+                }
+            }).done(function(result) {
+                //응답에 성공했을 때
+                //location.reload();
+                item.parent('td').parent('tr').remove();
+            }).fail(function(xhr, textStatus, errorThrown) {
+                //응답에 실패했을 때
+                console.log('게시물 삭제 실패');
+                console.log(xhr, textStatus, errorThrown);
+            })
+        });
+
         $('.enter').click(function() {
             location.href = '/post/enter';
         });
+
+
 
         let modalData;
 
@@ -54,7 +78,7 @@
             $('#postDate').text(`${modalData.date}`);
             $('#updateSpan').html(`<button type="button" class="btn btn-info" onclick="editDisplay()">수정하러가기</button>`);
         }
-        
+
         function editDisplay() {
             //console.log(modalData._id, modalData.title, modalData.content, modalData.date);
             $('#hiddenSpan').html(`<input  type='hidden' value='${modalData._id}' name='_id'>`);
@@ -64,25 +88,8 @@
             $('#updateSpan').html(`<button type="submit" class="btn btn-warning" >수정</button>`);
         }
 
-        $('.delete').click(function(e) {
-            let sid = e.target.dataset.id;
-            let item = $(this);
-            $.ajax({
-                type: 'post',
-                url: '/delete',
-                data: {
-                    _id: sid
-                }
-            }).done(function(result) {
-                //응답에 성공했을 때
-                //location.reload();
-                item.parent('td').parent('tr').remove();
-            }).fail(function(xhr, textStatus, errorThrown) {
-                //응답에 실패했을 때
-                console.log('게시물 삭제 실패');
-                console.log(xhr, textStatus, errorThrown);
-            })
-        })
+
+
     </script>
 
     <!-- The Modal -->
