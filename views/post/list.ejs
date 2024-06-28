@@ -54,7 +54,7 @@
             $('#postDate').text(`${modalData.date}`);
             $('#updateSpan').html(`<button type="button" class="btn btn-info" onclick="editDisplay()">수정하러가기</button>`);
         }
-
+        
         function editDisplay() {
             //console.log(modalData._id, modalData.title, modalData.content, modalData.date);
             $('#hiddenSpan').html(`<input  type='hidden' value='${modalData._id}' name='_id'>`);
@@ -63,7 +63,6 @@
             $('#postDate').html(`<input type='date' value='${modalData.date}' name='someDate'>`);
             $('#updateSpan').html(`<button type="submit" class="btn btn-warning" >수정</button>`);
         }
-
 
         $('.delete').click(function(e) {
             let sid = e.target.dataset.id;

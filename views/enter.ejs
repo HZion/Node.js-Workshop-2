@@ -123,7 +123,7 @@
                 if (idInput.value.length < 4) {
                     idError.textContent = '아이디는 4자리 이상으로 입력해주세요.';
                     idInput.classList.add('is-invalid');
-                    isValid = false;
+                    return false;
                 } else {
                     idError.textContent = '';
                     idInput.classList.remove('is-invalid');
@@ -131,28 +131,29 @@
 
                 const passwordInput = document.getElementById('form_userpw');
                 const passwordError = document.getElementById('passwordError');
-                if (passwordInput.value.length < 4) {
-                    passwordError.textContent = '비밀번호는 4자리 이상으로 입력해주세요.';
+                const regexPw = /^[a-z0-9#?!@$%^&*-](?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-])[a-z0-9#?!@$%^&*-]{8,12}$/;
+                if (!regexPw.test(passwordInput.value)) {
+                    passwordError.textContent = '비밀번호는 8-12자리, 영문자, 숫자, 특수문자를 포함해야 합니다.';
                     passwordInput.classList.add('is-invalid');
-                    isValid = false;
+                    return false;
                 } else {
                     passwordError.textContent = '';
                     passwordInput.classList.remove('is-invalid');
                 }
-
+                
                 const emailInput = document.getElementById('from_useremail');
                 const emailError = document.getElementById('emailError');
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if (!emailRegex.test(emailInput.value)) {
                     emailError.textContent = '이메일 형식이 올바르지 않습니다.';
                     emailInput.classList.add('is-invalid');
-                    isValid = false;
+                    return false;
                 } else {
                     emailError.textContent = '';
                     emailInput.classList.remove('is-invalid');
                 }
                 
-                return isValid;
+                return true;
             }
         </script>
 
