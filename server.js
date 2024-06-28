@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // routes
 app.use('/', require('./routes/account'));
-app.use('/', require('./routes/post'));
+app.use('/post', require('./routes/post'));
 
 //dotenv
 const dotenv = require('dotenv').config();
@@ -40,7 +40,7 @@ app.get('/', async (req, res) => {
         if (!req.session.user) {
             res.clearCookie('uid', { path: '/' });
         }
-
+        
         res.render('index.ejs');
     } catch (err) {
         res.status(500).send('DB Fail.');
