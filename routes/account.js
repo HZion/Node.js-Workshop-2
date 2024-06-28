@@ -22,7 +22,6 @@ router.post('/save', throttle({
 }), async (req, res) => {
     const { mysqldb } = await setup();
 
-
     // 중복 검사 쿼리
     const checkUserQuery = 'SELECT COUNT(*) AS count FROM account WHERE userid = ?';
 
@@ -41,9 +40,9 @@ router.post('/save', throttle({
       const insertUserQuery = 'INSERT INTO account (userid, userpw, salt, usergroup, useremail) VALUES (?, ?, ?, ?, ?)';
 
       const generateSalt = (length = 16) => {
-                        const crypto = require('crypto');
-                        return crypto.randomBytes(length).toString("hex");
-                    };
+        const crypto = require('crypto');
+        return crypto.randomBytes(length).toString("hex");
+      };
       const salt = generateSalt();
       req.body.userpw = sha(req.body.userpw + salt);
 
@@ -57,45 +56,7 @@ router.post('/save', throttle({
       });
     });
   });
-//     const { mysqldb } = await setup();
 
-//     // mongodb.collection('users').findOne({ userid: req.body.userid }).then((result) => {
-//     //     if (result) {
-//     //         res.render('enter.ejs', { data: { msg: '아이디가 중복되었습니다.' } });
-//     //     } else {
-//     //         const generateSalt = (length = 16) => {
-//     //             const crypto = require('crypto');
-//     //             return crypto.randomBytes(length).toString("hex");
-//     //         };
-
-//     //         const salt = generateSalt();
-//     //         req.body.userpw = sha(req.body.userpw + salt);
-//     //         mongodb.collection('users').insertOne(req.body).then((result) => {
-//     //             if (!result) {
-//     //                 console.log('회원가입 실패.')
-//     //                 res.render('enter.ejs', { data: { alertMsg: '회원가입에 실패하셨습니다.' } });
-//     //             }
-
-//     //             const sql = `insert into UserSalt (userid, salt) value (?, ?)`;
-//     //             mysqldb.query(sql, [req.body.userid, salt], (err, rows, fields) => {
-//     //                 if (err) {
-//     //                     console.log(err);
-//     //                 } else {
-//     //                     console.log('salt 저장 성공.');
-//     //                 }
-//     //             });
-
-//     //             res.redirect('/');
-//     //         }).catch((err) => {
-//     //             console.log(err);
-//     //             res.status(500).send();
-//     //         });
-//     //     }
-//     // }).catch((err) => {
-//     //     console.log(err);
-//     //     res.status(500).send();
-//     // });
-// });
 
 // 로그인 페이지
 router.get('/login', async (req, res) => {
