@@ -4,7 +4,7 @@ const { setup } = require('../db_setup');
 const sha = require('sha256');
 
 // 회원가입 페이지
-router.get('/account/enter', (req, res) => {
+router.get('/enter', (req, res) => {
     res.render('enter.ejs');
 });
 
@@ -13,7 +13,7 @@ router.get('/account/enter', (req, res) => {
 1.중복 id 확인
 2.회원 가입
  */
-router.post('/account/save', async (req, res) => {
+router.post('/save', async (req, res) => {
     const { mysqldb } = await setup();
     
   
@@ -103,7 +103,7 @@ router.get('/login', async (req, res) => {
 });
 
 // 로그인 처리
-router.post('/account/login', async (req, res) => {
+router.post('/login', async (req, res) => {
     const { mysqldb } = await setup();
     let sql = 'SELECT userid, userpw, salt FROM account WHERE userid=?';
     mysqldb.query(sql, [req.body.userid], (err, rows, fields) => {
@@ -126,7 +126,7 @@ router.post('/account/login', async (req, res) => {
 });
 
 // 로그아웃
-router.get('/account/logout', async (req, res) => {
+router.get('/logout', async (req, res) => {
     req.session.destroy();
     res.render('index.ejs');
 });
