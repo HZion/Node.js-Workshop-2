@@ -17,13 +17,16 @@ app.use(session({
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
-// bodyParser
+// bodyParsers
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // routes
 app.use('/', require('./routes/account'));
 app.use('/post', require('./routes/post'));
+
+//dotenv
+const dotenv = require('dotenv').config();
 
 // listen
 app.listen(process.env.WEB_PORT, async () => {
