@@ -20,13 +20,13 @@ router.get('/enter', (req, res) => {
 1.중복 id 확인
 2.회원 가입
  */
-router.post('/save', throttle({
+router.post('/signup', throttle({
     rate: "1/1m",
     on_throttled: function (req, res, next, bucket){
         res.render('index.ejs', { data: { alertMsg: '1분당 한번만 가입 가능합니다.'}})
     }
 }), [
-    body('userid').exists().isLength({min: 5}),
+    body('userid').exists().isLength({min: 4}),
     body('userpw').exists().matches(regexPw),
     validatorErrorChecker
 ], async (req, res) => {
