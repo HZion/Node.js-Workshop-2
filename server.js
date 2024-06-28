@@ -9,11 +9,10 @@ const app = express();
 const rateLimit  = require('express-rate-limit');
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15분
-    max: 10 // IP당 최대 100개의 요청
+    max: 100 // IP당 최대 100개의 요청
 });
 
 app.use(limiter);
-
 
 // session
 const session = require('express-session');
@@ -32,7 +31,7 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // routes
-app.use('/', require('./routes/account'));
+app.use('/account', require('./routes/account'));
 app.use('/post', require('./routes/post'));
 
 //dotenv
