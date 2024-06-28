@@ -2,6 +2,7 @@ const router = require('express').Router();
 const { setup } = require('../db_setup');
 
 const sha = require('sha256');
+const throttle = require("express-throttle");
 
 // 회원가입 페이지
 router.get('/enter', (req, res) => {
@@ -13,24 +14,29 @@ router.get('/enter', (req, res) => {
 1.중복 id 확인
 2.회원 가입
  */
-router.post('/save', async (req, res) => {
+router.post('/save', throttle({
+    rate: "1/1m",
+    on_throttled: function (req, res, next, bucket){
+        res.render('index.ejs', { data: { alertMsg: '1분당 한번만 가입 가능합니다.'}})
+    }
+}), async (req, res) => {
     const { mysqldb } = await setup();
-    
-  
+
+
     // 중복 검사 쿼리
     const checkUserQuery = 'SELECT COUNT(*) AS count FROM account WHERE userid = ?';
-  
+
     mysqldb.query(checkUserQuery, [req.body.userid], (err, results) => {
       if (err) {
         console.error('error during user check: ' + err.stack);
         return res.status(500).json({ error: 'Database error' });
       }
-  
+
       if (results[0].count > 0) {
         // 중복된 userid가 존재하는 경우
         return res.status(400).json({ error: 'User ID already exists' });
       }
-  
+
       // 중복된 userid가 없는 경우 회원 가입 진행
       const insertUserQuery = 'INSERT INTO account (userid, userpw, salt, usergroup, useremail) VALUES (?, ?, ?, ?, ?)';
 
@@ -46,13 +52,13 @@ router.post('/save', async (req, res) => {
           console.error('error during user insertion: ' + err.stack);
           return res.status(500).json({ error: 'Database error' });
         }
-  
+
         res.render('index.ejs');
       });
     });
   });
 //     const { mysqldb } = await setup();
-    
+
 //     // mongodb.collection('users').findOne({ userid: req.body.userid }).then((result) => {
 //     //     if (result) {
 //     //         res.render('enter.ejs', { data: { msg: '아이디가 중복되었습니다.' } });
@@ -110,7 +116,7 @@ router.post('/login', async (req, res) => {
         if (err) {
             return console.error(err);
         }
-        
+
         if (rows.length == 0) {
             return res.render('index.ejs', { data: { alertMsg: '다시 로그인 해주세요.' } });
         }

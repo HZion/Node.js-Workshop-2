@@ -12,6 +12,7 @@ const limiter = rateLimit({
     max: 10 // IP당 최대 100개의 요청
 });
 
+
 app.use(limiter);
 
 
@@ -32,7 +33,7 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // routes
-app.use('/', require('./routes/account'));
+app.use('/account', require('./routes/account'));
 app.use('/post', require('./routes/post'));
 
 //dotenv
