@@ -43,7 +43,7 @@ router.get('/list', cacheMiddleware(10), async (req, res) => {
             row.created = dateFormat(row.created)
         }
         console.log('불러오기');
-        res.render('post/list.ejs', { data: rows })
+        res.render('list.ejs', { data: rows })
     } catch (e) {
         console.log(e)
     }
@@ -54,7 +54,7 @@ router.get('/enter', async (req, res) => {
         return res.redirect('/');
     }
 
-    res.render('post/enter.ejs');
+    res.render('enter.ejs');
 });
 
 router.post('/save', async (req, res) => {
@@ -81,7 +81,7 @@ router.post('/save', async (req, res) => {
 
     // post 저장
     sql = `INSERT INTO post (title, content, created, account_id) VALUES (?, ?, ?, ?)`;
-    
+
     try {
         const [rows, fields] = await mysqldb.promise().query(sql, [req.body.title, req.body.content, new Date(), account_id]);
         console.log('Post 테이블에 저장 성공.');
@@ -93,4 +93,25 @@ router.post('/save', async (req, res) => {
     res.redirect('/post/list');
 });
 
+router.post('/delete', async (req, res) => {
+    console.log(req.body)
+    console.log(123)
+
+    const { mysqldb } = await setup();
+    let sql = 'DELETE FROM post WHERE id=?';
+
+    try {
+        const [rows, fields] = await mysqldb.promise().query(sql, [req.body.id]);
+
+        if (rows.length == 0) {
+            return res.render('index.ejs', { data: { alertMsg: '없는 ID 입니다' } });
+        }
+        console.log(rows)
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: '서버 오류가 발생했습니다.' });
+    }
+    res.redirect('/post/list');
+
+})
 module.exports = router;
