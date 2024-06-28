@@ -3,6 +3,12 @@ const { setup } = require('../db_setup');
 
 const sha = require('sha256');
 const throttle = require("express-throttle");
+const { body } = require('express-validator');
+const { validatorErrorChecker } = require('../middleware/validator');
+
+// 8 - 12  소문자 숫자 특수문자 포함
+const regexPw =
+    /^[a-z0-9#?!@$%^&*-](?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-])[a-z0-9#?!@$%^&*-]{8,12}$/;
 
 // 회원가입 페이지
 router.get('/enter', (req, res) => {
@@ -19,8 +25,13 @@ router.post('/save', throttle({
     on_throttled: function (req, res, next, bucket){
         res.render('index.ejs', { data: { alertMsg: '1분당 한번만 가입 가능합니다.'}})
     }
-}), async (req, res) => {
+}), [
+    body('userid').exists().isLength({min: 5}),
+    body('userpw').exists().matches(regexPw),
+    validatorErrorChecker
+], async (req, res) => {
     const { mysqldb } = await setup();
+
 
     // 중복 검사 쿼리
     const checkUserQuery = 'SELECT COUNT(*) AS count FROM account WHERE userid = ?';
@@ -56,6 +67,7 @@ router.post('/save', throttle({
       });
     });
   });
+
 
 
 // 로그인 페이지
@@ -96,6 +108,34 @@ router.post('/login', async (req, res) => {
 router.get('/logout', async (req, res) => {
     req.session.destroy();
     res.render('index.ejs');
+});
+
+// 회원가입 폼에서 아이디만 중복 검사하기
+router.post('/check-id', async function (req, res) {
+  try {
+      if (req.body.userid == undefined) {
+          res.json({ isDuplicate: false });
+          return;
+      }
+
+      const { mysqldb } = await setup();
+      let sql = 'SELECT userid, userpw, salt FROM account WHERE userid=?';
+      mysqldb.query(sql, [req.body.userid], (err, rows, fields) => {
+          if (err) {
+              console.error(err);
+              return;
+          }
+
+          if (0 < rows.length) {
+              return res.json({ isDuplicate: true });
+          }
+
+          res.json({ isDuplicate: false });
+      });
+  } catch (error) {
+      console.error('Error checking user ID:', error);
+      res.status(500).json({ error: 'An error occurred while checking the user ID.' });
+  }
 });
 
 module.exports = router;
