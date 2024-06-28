@@ -35,6 +35,11 @@ router.get('/list', cacheMiddleware(10), async (req, res) => {
         console.log(e)
     }
 
+<<<<<<< Updated upstream
+=======
+    // const { mysqldb } = await setup();
+    // list(mongodb, req, res);
+>>>>>>> Stashed changes
 })
 
 
