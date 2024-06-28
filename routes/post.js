@@ -31,7 +31,11 @@ function dateFormat(date) {
 }
 
 router.get('/list', cacheMiddleware(10), async (req, res) => {
-    const { mysqldb} = await setup()
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+    
+    const { mysqldb } = await setup()
     try{
         let [rows, fields] = await mysqldb.promise().query('select * from post');
 
