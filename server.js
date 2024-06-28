@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // routes
 app.use('/', require('./routes/account'));
-app.use('/', require('./routes/post'));
+app.use('/post', require('./routes/post'));
 
 // listen
 app.listen(process.env.WEB_PORT, async () => {
