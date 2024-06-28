@@ -24,8 +24,8 @@
             <% for(let i = 0; i < data.length; i++){ %>
             <tr>
                 <td data-bs-toggle="modal" data-bs-target="#myModal">
-                    <a href="#" onclick="modal_content(`<%= data[i]._id %>`,`<%= data[i].title %>`,`<%= data[i].content %>`, `<%= data[i].date %>`)"><%= data[i].title %></a></td>
-                <td><%= data[i].date %></td>
+                    <a href="#" onclick="modal_content(`<%= data[i]._id %>`,`<%= data[i].title %>`,`<%= data[i].content %>`, `<%= data[i].created %>`)"><%= data[i].title %></a></td>
+                <td><%= data[i].created %></td>
                 <td><button class='delete btn btn-outline-danger' data-id='<%= data[i]._id %>'>삭제</button></td>
             </tr>
             <% } %>
